@@ -8,11 +8,9 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>STEM Racing Card AR</title>
+    <title>NOUF AR</title>
 
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
     <style>
 
@@ -28,39 +26,120 @@
 <body>
 
     <a-scene
-        mindar-image="imageTargetSrc: targets.mind;"
-        color-space="sRGB"
-        renderer="colorManagement: true, physicallyCorrectLights"
-        vr-mode-ui="enabled: false"
-        device-orientation-permission-ui="enabled: false">
+        renderer="colorManagement: true; physicallyCorrectLights: true"
+        vr-mode-ui="enabled: true"
+        embedded>
 
         <a-assets>
 
             <a-asset-item
-                id="carModel"
-                src="AR.glb">
+                id="noufModel"
+                src="NOUF31.glb">
             </a-asset-item>
 
         </a-assets>
 
+
         <a-camera
             position="0 0 0"
-            look-controls="enabled: false">
+            look-controls="enabled: true">
         </a-camera>
 
+
         <a-entity
-            mindar-image-target="targetIndex: 0">
-
-            <a-gltf-model
-                src="#carModel"
-                position="0 0 0.15"
-                rotation="0 0 0"
-                scale="1 1 1">
-            </a-gltf-model>
-
+            id="model"
+            gltf-model="#noufModel"
+            visible="false"
+            scale="1 1 1"
+            position="0 0 0">
         </a-entity>
 
+
+        <a-light
+            type="ambient"
+            intensity="2">
+        </a-light>
+
+
+        <a-light
+            type="directional"
+            intensity="2"
+            position="1 4 2">
+        </a-light>
+
     </a-scene>
+
+
+    <script>
+
+        const model = document.querySelector("#model");
+
+        let placed = false;
+
+        model.addEventListener("model-loaded", () => {
+
+            console.log("NOUF31.glb loaded successfully");
+
+        });
+
+        model.addEventListener("model-error", (error) => {
+
+            console.error("Could not load NOUF31.glb", error);
+
+        });
+
+
+        document.querySelector("a-scene").addEventListener(
+            "enter-vr",
+            async () => {
+
+                const scene = document.querySelector("a-scene");
+
+                if (!navigator.xr) {
+
+                    alert("WebXR is not supported on this device/browser.");
+
+                    return;
+
+                }
+
+                try {
+
+                    const session = scene.renderer.xr.getSession();
+
+                    console.log("AR session started");
+
+                } catch (error) {
+
+                    console.error(error);
+
+                }
+
+            }
+        );
+
+
+        window.addEventListener("click", () => {
+
+            if (!placed) {
+
+                model.setAttribute(
+                    "position",
+                    "0 0 -2"
+                );
+
+                model.setAttribute(
+                    "visible",
+                    true
+                );
+
+                placed = true;
+
+            }
+
+        });
+
+    </script>
 
 </body>
 

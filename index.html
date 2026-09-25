@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta name="viewport"
@@ -10,13 +9,41 @@
 
     <title>NOUF AR</title>
 
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script type="module"
+        src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js">
+    </script>
 
     <style>
 
         body {
             margin: 0;
             overflow: hidden;
+            background: white;
+        }
+
+        model-viewer {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .ar-button {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            padding: 15px 25px;
+
+            font-size: 18px;
+            font-family: Arial, sans-serif;
+
+            border: none;
+            border-radius: 10px;
+
+            background: black;
+            color: white;
+
+            cursor: pointer;
         }
 
     </style>
@@ -25,121 +52,21 @@
 
 <body>
 
-    <a-scene
-        renderer="colorManagement: true; physicallyCorrectLights: true"
-        vr-mode-ui="enabled: true"
-        embedded>
+    <model-viewer
+        src="NOUF31.glb"
+        alt="NOUF 3D Model"
+        camera-controls
+        ar
+        ar-modes="webxr scene-viewer quick-look"
+        shadow-intensity="1">
 
-        <a-assets>
+        <button
+            slot="ar-button"
+            class="ar-button">
+            View in AR
+        </button>
 
-            <a-asset-item
-                id="noufModel"
-                src="NOUF31.glb">
-            </a-asset-item>
-
-        </a-assets>
-
-
-        <a-camera
-            position="0 0 0"
-            look-controls="enabled: true">
-        </a-camera>
-
-
-        <a-entity
-            id="model"
-            gltf-model="#noufModel"
-            visible="false"
-            scale="1 1 1"
-            position="0 0 0">
-        </a-entity>
-
-
-        <a-light
-            type="ambient"
-            intensity="2">
-        </a-light>
-
-
-        <a-light
-            type="directional"
-            intensity="2"
-            position="1 4 2">
-        </a-light>
-
-    </a-scene>
-
-
-    <script>
-
-        const model = document.querySelector("#model");
-
-        let placed = false;
-
-        model.addEventListener("model-loaded", () => {
-
-            console.log("NOUF31.glb loaded successfully");
-
-        });
-
-        model.addEventListener("model-error", (error) => {
-
-            console.error("Could not load NOUF31.glb", error);
-
-        });
-
-
-        document.querySelector("a-scene").addEventListener(
-            "enter-vr",
-            async () => {
-
-                const scene = document.querySelector("a-scene");
-
-                if (!navigator.xr) {
-
-                    alert("WebXR is not supported on this device/browser.");
-
-                    return;
-
-                }
-
-                try {
-
-                    const session = scene.renderer.xr.getSession();
-
-                    console.log("AR session started");
-
-                } catch (error) {
-
-                    console.error(error);
-
-                }
-
-            }
-        );
-
-
-        window.addEventListener("click", () => {
-
-            if (!placed) {
-
-                model.setAttribute(
-                    "position",
-                    "0 0 -2"
-                );
-
-                model.setAttribute(
-                    "visible",
-                    true
-                );
-
-                placed = true;
-
-            }
-
-        });
-
-    </script>
+    </model-viewer>
 
 </body>
 
